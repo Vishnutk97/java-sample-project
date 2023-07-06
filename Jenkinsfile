@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        function_name = 'my-lambda-function'
-    }
-
     stages {
         stage('Build') {
             steps {
