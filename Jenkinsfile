@@ -1,18 +1,24 @@
 pipeline {
     agent any
 
+    environment {
+        function_name = 'java-sample'
+    }   
     stages {
+
+        // CI Start
         stage('Build') {
             steps {
                 echo 'Build'
                 sh 'mvn package'
             }
         }
-        
-        stage('SonarQube analysis') {
+
+        stage("SonarQube analysis") {
+            agent any
             when {
                 anyOf {
-                    branch 'master'
+                    branch 'main'
                 }
             }
             steps {
@@ -21,8 +27,7 @@ pipeline {
                 }
             }
         }
-
-        stage('Quality Gate') {
+        stage("Quality Gate") {
             steps {
                 script {
                     try {
@@ -31,42 +36,41 @@ pipeline {
                         }
                     }
                     catch (Exception ex) {
-                        // Handle the exception if needed
+
                     }
                 }
             }
         }
-        
-        
         stage('Push') {
             steps {
                 echo 'Push'
             }
         }
 
-        stage('Deploy') {
-            parallel {
-                stage('Deploy to Dev') {
-                    steps {
-                        echo 'Deploy to Dev'
-                        // Add deployment steps for Dev environment
-                    }
-                }
+        // Ci Ended
 
-                stage('Deploy to Test') {
-                    steps {
-                        echo 'Deploy to Test'
-                        // Add deployment steps for Test environment
-                    }
-                }
+        // CD Started
 
-                stage('Deploy to Prod') {
-                    steps {
-                        echo 'Deploy to Prod'
-                        // Add deployment steps for Prod environment
-                    }
-                }
+       stage ('Deployments') {
+           parallel {
+               
+        stage('Deploy to Dev') {
+            steps {
+                echo 'Build'
             }
         }
+
+        stage('Deploy to test ') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo 'Build'
+            }
+        }
+            
+    }
+        // CD Ended
+}
     }
 }
