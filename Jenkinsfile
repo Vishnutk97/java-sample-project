@@ -1,9 +1,6 @@
 pipeline {
     agent any
-
-    environment {
-        function_name = 'java-sample'
-    }   
+    
     stages {
 
         // CI Start
@@ -22,7 +19,7 @@ pipeline {
                 }
             }
             steps {
-                withSonarQubeEnv('Sonar') {
+                withSonarQubeEnv('sonar') {
                     sh 'mvn sonar:sonar'
                 }
             }
