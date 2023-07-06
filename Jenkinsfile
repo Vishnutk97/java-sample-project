@@ -26,11 +26,12 @@ pipeline {
             steps {
                 script {
                     try {
-                        timeout(time: '10',unit: 'MINUTES') {
+                        timeout(time: 10, unit: 'MINUTES') {
                             waitForQualityGate abortPipeline: true
                         }
                     }
                     catch (Exception ex) {
+                        // Handle the exception if needed
                     }
                 }
             }
@@ -45,21 +46,27 @@ pipeline {
 
         stage('Deploy') {
             parallel {
-                stage ('Deploy to Dev') {
+                stage('Deploy to Dev') {
                     steps {
-                        echo 'Build'
+                        echo 'Deploy to Dev'
+                        // Add deployment steps for Dev environment
                     }
                 }
 
-                stage ('Deploy to test') {
+                stage('Deploy to Test') {
                     steps {
-                        echo 'Build'
+                        echo 'Deploy to Test'
+                        // Add deployment steps for Test environment
                     }
                 }
-                stage ('Deploy to Prod') {
+
+                stage('Deploy to Prod') {
                     steps {
-                        echo 'Build'
+                        echo 'Deploy to Prod'
+                        // Add deployment steps for Prod environment
                     }
                 }
             }
         }
+    }
+}
