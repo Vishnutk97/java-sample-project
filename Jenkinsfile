@@ -18,7 +18,7 @@ pipeline {
             agent any
             when {
                 anyOf {
-                    branch 'main'
+                    branch 'master'
                 }
             }
             steps {
@@ -62,7 +62,7 @@ pipeline {
 
         stage('Deploy to test ') {
             when {
-                branch 'main'
+                branch 'master'
             }
             steps {
                 echo 'Build'
