@@ -12,21 +12,57 @@ pipeline {
                 sh 'mvn package'
             }
         }
+        
+        stage('SonarQube analysis') {
+            when {
+                anyOf {
+                    branch 'master'
+                }
+            }
+            steps {
+                withSonarQubeEnv('Sonar') {
+                    sh 'mvn sonar:sonar'
+                }
+            }
+        }
 
+        stage('Quality Gate') {
+            steps {
+                script {
+                    try {
+                        timeout(time: 10,unit: 'MINUTES') {
+                            waitForQualityGate abortPipeline: true
+                        }
+                    }
+                    catch (Exception ex) {
+                    }
+                }
+            }
+        }
+        
+        
         stage('Push') {
             steps {
                 echo 'Push'
-
-                sh "aws s3 cp target/sample-1.0.3.jar s3://java-project-vishnu"
             }
         }
 
         stage('Deploy') {
-            steps {
-                echo 'Build'
+            parallel {
+                stage ('Deploy to Dev') {
+                    steps {
+                        echo 'Build'
+                    }
+                }
 
-                sh "aws lambda update-function-code --function-name $function_name --region us-east-1 --s3-bucket java-project-vishnu --s3-key sample-1.0.3.jar"
-            }
-        }
-    }
-}
+                stage ('Deploy to test') {
+                    steps {
+                        echo 'Build'
+                    }
+                }
+                stage ('Deploy to Prod') {
+                    steps {
+                        echo 'Build'
+                    }
+                }
+
