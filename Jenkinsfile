@@ -24,20 +24,13 @@ pipeline {
                 }
             }
         }
+        
         stage("Quality Gate") {
             steps {
-                script {
-                    try {
-                        timeout(time: 10, unit: 'MINUTES') {
-                            waitForQualityGate abortPipeline: true
-                        }
-                    }
-                    catch (Exception ex) {
-
-                    }
-                }
-            }
-        }
+              timeout(time: 10, unit: 'MINUTES') {
+                waitForQualityGate abortPipeline: true
+              }
+                
         stage('Push') {
             steps {
                 echo 'Push'
